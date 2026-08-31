@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#14171F">
+<title>스피치 트레이닝</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#12141C;
+    --surface:#1B1F2A;
+    --surface2:#242A38;
+    --line: rgba(255,255,255,0.08);
+    --text:#F2F1EC;
+    --text-dim:#9AA0B4;
+    --amber:#FFB300;
+    --amber-dim: rgba(255,179,0,0.16);
+    --teal:#33D6C0;
+    --coral:#FF6B5B;
+    --violet:#9B8CFF;
+    --sky:#5FA8FF;
+    --gold:#F2C14E;
+    --radius:22px;
+    --safe-top: env(safe-area-inset-top);
+    --safe-bottom: env(safe-area-inset-bottom);
+  }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+  html,body{
+    margin:0; padding:0; height:100%;
+    background:var(--ink); color:var(--text);
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    overscroll-behavior:none;
+    -webkit-user-select:none; user-select:none;
+  }
+  h1,h2,h3,.display{ font-family:'Space Grotesk','Inter',sans-serif; letter-spacing:-0.01em; }
+  #app{ position:fixed; inset:0; overflow:hidden; }
+  .screen{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column;
+    padding: calc(var(--safe-top) + 20px) 20px calc(var(--safe-bottom) + 20px);
+    opacity:1; transition: opacity .25s ease;
+  }
+  .screen.hidden{ opacity:0; pointer-events:none; }
+
+  /* ---------- HOME ---------- */
+  #home-header{ margin-bottom:22px; }
+  #home-header .eyebrow{ color:var(--text-dim); font-size:14px; margin:0 0 4px; }
+  #home-header h1{ font-size:30px; font-weight:700; margin:0; }
+  .stats-strip{
+    display:flex; gap:10px; margin-top:16px;
+  }
+  .stat-chip{
+    flex:1; background:var(--surface); border:1px solid var(--line);
+    border-radius:16px; padding:12px 14px;
+  }
+  .stat-chip .num{ font-family:'Space Grotesk',sans-serif; font-size:22px; font-weight:700; }
+  .stat-chip .label{ font-size:12px; color:var(--text-dim); margin-top:2px; }
+
+  #stations{
+    flex:1; display:flex; flex-direction:column; gap:12px;
+    margin-top:20px; overflow-y:auto; padding-bottom:20px;
+  }
+  .station-card{
+    display:flex; align-items:center; gap:14px;
+    background:var(--surface); border:1px solid var(--line);
+    border-radius:var(--radius); padding:16px 16px;
+    text-align:left; cursor:pointer;
+    transition: transform .12s ease, background .12s ease;
+  }
+  .station-card:active{ transform:scale(0.97); background:var(--surface2); }
+  .station-badge{
+    width:44px; height:44px; border-radius:14px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:18px;
+    color:var(--ink); flex-shrink:0;
+  }
+  .station-body{ flex:1; min-width:0; }
+  .station-body h3{ margin:0 0 3px; font-size:17px; font-weight:600; }
+  .station-body p{ margin:0; font-size:13px; color:var(--text-dim); line-height:1.4; }
+  .station-meta{ font-size:12px; color:var(--text-dim); margin-top:6px; }
+  .station-card.primary{ border-color: rgba(255,179,0,0.35); }
+  .primary-tag{
+    font-size:11px; color:var(--amber); margin-top:6px; font-weight:600;
+  }
+
+  /* ---------- GAME SCREEN ---------- */
+  #game-screen{ justify-content:flex-start; }
+  .game-top{ display:flex; align-items:center; justify-content:space-between; }
+  .quit-btn{
+    width:38px; height:38px; border-radius:50%; background:var(--surface);
+    border:1px solid var(--line); color:var(--text-dim);
+    display:flex; align-items:center; justify-content:center; font-size:16px;
+  }
+  .progress-label{ font-size:13px; color:var(--text-dim); font-weight:500; }
+  .round-dots{ display:flex; gap:6px; }
+  .round-dot{ width:7px; height:7px; border-radius:50%; background:var(--line); }
+  .round-dot.filled{ background:var(--amber); }
+
+  .stage-wrap{
+    flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:22px; position:relative;
+  }
+
+  /* station intro */
+  .intro-box{ text-align:center; }
+  .intro-box .num{ font-family:'Space Grotesk',sans-serif; font-size:15px; color:var(--amber); font-weight:600; margin-bottom:8px; }
+  .intro-box h2{ font-size:26px; margin:0 0 8px; }
+  .intro-box p{ color:var(--text-dim); font-size:14px; margin:0; }
+
+  /* ring timer */
+  .ring-wrap{ position:relative; width:220px; height:220px; }
+  .ring-wrap svg{ width:100%; height:100%; transform:rotate(-90deg); }
+  .ring-bg{ fill:none; stroke:var(--surface2); stroke-width:10; }
+  .ring-fg{ fill:none; stroke:var(--amber); stroke-width:10; stroke-linecap:round;
+    transition: stroke-dashoffset .12s linear, stroke .2s ease; }
+  .ring-fg.urgent{ stroke:var(--coral); }
+  .ring-center{
+    position:absolute; inset:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+  }
+  .ring-number{ font-family:'Space Grotesk',sans-serif; font-size:52px; font-weight:700; line-height:1; }
+  .ring-caption{ font-size:12px; color:var(--text-dim); margin-top:4px; }
+
+  /* prompt content */
+  .prompt-box{ text-align:center; padding:0 10px; max-width:340px; }
+  .instruction{ font-size:15px; color:var(--text-dim); margin:0 0 14px; line-height:1.5; }
+  .category-chip{
+    display:inline-block; font-size:12px; color:var(--violet);
+    background:rgba(155,140,255,0.14); padding:4px 10px; border-radius:20px; margin-bottom:10px;
+  }
+  .word-chips{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  .word-chip{
+    background:var(--surface2); border:1px solid var(--line);
+    border-radius:16px; padding:10px 16px; font-size:19px; font-weight:600;
+    font-family:'Space Grotesk',sans-serif;
+    opacity:0; transform:translateY(10px);
+    animation: chipIn .45s ease forwards;
+  }
+  @keyframes chipIn{ to{ opacity:1; transform:translateY(0);} }
+  .big-word{ font-family:'Space Grotesk',sans-serif; font-size:34px; font-weight:700;
+    opacity:0; transform:translateY(8px); animation: chipIn .5s ease forwards; }
+  .compress-label{ font-size:13px; color:var(--amber); font-weight:600; margin-bottom:6px; }
+
+  .round-pulse{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    flex-direction:column; gap:10px;
+  }
+  .round-pulse .check{
+    width:64px; height:64px; border-radius:50%; background:var(--teal);
+    display:flex; align-items:center; justify-content:center; font-size:30px; color:var(--ink);
+    animation: pulseIn .5s cubic-bezier(.2,1.4,.4,1) forwards;
+  }
+  @keyframes pulseIn{ 0%{ transform:scale(0.4); opacity:0;} 60%{ transform:scale(1.08);} 100%{ transform:scale(1); opacity:1;} }
+  .round-pulse .txt{ font-size:14px; color:var(--text-dim); }
+
+  .station-end{
+    text-align:center;
+  }
+  .station-end .check-lg{
+    width:84px; height:84px; border-radius:50%; margin:0 auto 16px;
+    background:var(--amber); display:flex; align-items:center; justify-content:center;
+    font-size:38px; color:var(--ink); animation: pulseIn .5s cubic-bezier(.2,1.4,.4,1) forwards;
+  }
+  .station-end h2{ font-size:22px; margin:0 0 6px; }
+  .station-end p{ color:var(--text-dim); font-size:14px; margin:0; }
+
+  .skip-row{ display:flex; justify-content:center; padding-top:6px; }
+  .skip-btn{
+    background:none; border:none; color:var(--text-dim); font-size:13px;
+    padding:10px 18px;
+  }
+
+  /* ---------- SUMMARY ---------- */
+  #summary-screen{ align-items:center; justify-content:center; text-align:center; }
+  .summary-badge{
+    width:96px; height:96px; border-radius:50%; margin-bottom:22px;
+    background: linear-gradient(135deg, var(--amber), var(--coral));
+    display:flex; align-items:center; justify-content:center; font-size:44px;
+  }
+  #summary-screen h1{ font-size:26px; margin:0 0 8px; }
+  #summary-screen p{ color:var(--text-dim); font-size:14px; margin:0 0 24px; }
+  .summary-stats{ display:flex; gap:12px; margin-bottom:30px; }
+  .home-btn{
+    background:var(--amber); color:var(--ink); border:none; border-radius:16px;
+    padding:16px 40px; font-size:16px; font-weight:700; font-family:'Space Grotesk',sans-serif;
+  }
+  .home-btn:active{ opacity:0.85; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- HOME -->
+  <section id="home-screen" class="screen">
+    <div id="home-header">
+      <p class="eyebrow">오늘의 훈련</p>
+      <h1>스피치 트레이닝</h1>
+      <div class="stats-strip">
+        <div class="stat-chip"><div class="num" id="stat-streak">0일</div><div class="label">연속 훈련</div></div>
+        <div class="stat-chip"><div class="num" id="stat-total">0회</div><div class="label">누적 완료</div></div>
+      </div>
+    </div>
+    <div id="stations"></div>
+  </section>
+
+  <!-- GAME -->
+  <section id="game-screen" class="screen hidden">
+    <div class="game-top">
+      <div class="quit-btn" id="quit-btn">✕</div>
+      <div class="progress-label" id="progress-label"></div>
+      <div class="round-dots" id="round-dots"></div>
+    </div>
+    <div class="stage-wrap" id="stage-wrap"></div>
+    <div class="skip-row"><button class="skip-btn" id="skip-btn">다음으로 건너뛰기 →</button></div>
+  </section>
+
+  <!-- SUMMARY -->
+  <section id="summary-screen" class="screen hidden">
+    <div class="summary-badge">🎉</div>
+    <h1>오늘 훈련 완료</h1>
+    <p id="summary-sub">5개 스테이션을 모두 마쳤어요</p>
+    <div class="summary-stats">
+      <div class="stat-chip"><div class="num" id="summary-streak">0일</div><div class="label">연속 훈련</div></div>
+      <div class="stat-chip"><div class="num" id="summary-total">0회</div><div class="label">누적 완료</div></div>
+    </div>
+    <button class="home-btn" id="summary-home-btn">홈으로</button>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- DATA POOLS ---------------- */
+  const KEYWORDS = ["우산","기차역","커피","달빛","자전거","편지","고양이","바다","시계","계단","안개","촛불","지도","호수","라디오","여권","자물쇠","불꽃놀이","나침반","온실"];
+  const TOPICS = ["여행","행복","인공지능","환경보호","건강한 습관","우정","도시생활","독서","성장","돈","시간관리","창의성","소통","자유","변화","전통과 현대","일과 삶의 균형","도전","협업","기억"];
+  const WORDS = ["텀블러","우산","이어폰","백팩","지갑","선풍기","키보드","화분","손목시계","슬리퍼","양초","머그컵","안경","보조배터리","의자","거울","우체통","자전거 벨","계산기","저금통"];
+  const QUESTIONS5 = [
+    {cat:"시사", text:"최근 가장 인상 깊었던 뉴스는 무엇인가요?"},
+    {cat:"정치", text:"투표는 왜 중요하다고 생각하나요?"},
+    {cat:"국제", text:"가보고 싶은 나라와 그 이유는 무엇인가요?"},
+    {cat:"엔터", text:"최근에 본 영화나 드라마를 추천해보세요."},
+    {cat:"문화", text:"한국 문화 중 외국인에게 소개하고 싶은 것은?"},
+    {cat:"시사", text:"인공지능이 일자리에 미치는 영향에 대해 말해보세요."},
+    {cat:"정치", text:"좋은 리더의 조건은 무엇이라고 생각하나요?"},
+    {cat:"국제", text:"환율 변동이 우리 생활에 미치는 영향은?"},
+    {cat:"엔터", text:"좋아하는 음악 장르와 그 이유를 설명해보세요."},
+    {cat:"문화", text:"세대 차이를 줄이는 방법은 무엇일까요?"},
+    {cat:"시사", text:"기후변화 대응을 위해 개인이 할 수 있는 일은?"},
+    {cat:"정치", text:"표현의 자유는 어디까지 허용되어야 할까요?"},
+    {cat:"국제", text:"다른 나라 문화에서 배우고 싶은 점은?"},
+    {cat:"엔터", text:"최근 화제가 된 연예 뉴스에 대해 말해보세요."},
+    {cat:"문화", text:"전통을 지키는 것과 변화하는 것, 무엇이 더 중요할까요?"},
+    {cat:"시사", text:"재택근무 확산에 대해 어떻게 생각하나요?"},
+    {cat:"정치", text:"정치 뉴스를 얼마나 자주 챙겨보시나요? 그 이유는?"},
+    {cat:"국제", text:"국제 뉴스 중 최근 주목할 만한 이슈는?"},
+    {cat:"엔터", text:"인상 깊었던 공연이나 전시를 소개해보세요."},
+    {cat:"문화", text:"요즘 젊은 세대의 트렌드 중 흥미로운 것은?"},
+    {cat:"시사", text:"미디어가 여론에 미치는 영향에 대해 말해보세요."},
+    {cat:"국제", text:"글로벌 기업의 사회적 책임은 무엇이라 생각하나요?"}
+  ];
+
+  const STATIONS = [
+    { id:1, color:"var(--amber)", name:"키워드 조합", tagline:"무작위 단어 3개를 엮어 20초간 스피치", meta:"3라운드 · 20초", type:"keywords" },
+    { id:2, color:"var(--teal)",  name:"주제 연상",   tagline:"주제를 보고 관련 단어 3개를 20초 안에", meta:"3라운드 · 20초", type:"topic" },
+    { id:3, color:"var(--sky)",   name:"한 단어 설명", tagline:"물건 하나를 20초간 설명", meta:"3라운드 · 20초", type:"word" },
+    { id:4, color:"var(--coral)", name:"압축 브리핑", tagline:"같은 질문을 60→30→15초로 압축", meta:"3라운드 · 60/30/15초", type:"compress" },
+    { id:5, color:"var(--violet)",name:"즉석 인터뷰", tagline:"무작위 질문에 3초 생각 후 30초 답변", meta:"3라운드 · 30초", type:"random_q" }
+  ];
+  const STATION_FIXED_PROMPT = "오늘 주식시장의 시황을 말해보세요";
+
+  /* ---------------- UTIL ---------------- */
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+  }
+  function el(html){
+    const t = document.createElement('template');
+    t.innerHTML = html.trim();
+    return t.content.firstElementChild;
+  }
+  function $(id){ return document.getElementById(id); }
+
+  /* ---------------- AUDIO ---------------- */
+  let actx = null;
+  function ensureAudio(){
+    if(!actx){
+      try{ actx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){}
+    }
+    if(actx && actx.state === 'suspended'){ actx.resume(); }
+  }
+  function beep(freq, dur, type, vol){
+    if(!actx) return;
+    try{
+      const t0 = actx.currentTime;
+      const osc = actx.createOscillator();
+      const gain = actx.createGain();
+      osc.type = type || 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(vol||0.15, t0);
+      gain.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
+      osc.connect(gain).connect(actx.destination);
+      osc.start(t0);
+      osc.stop(t0 + dur);
+    }catch(e){}
+  }
+  function tickSound(){ beep(440,0.08,'sine',0.12); }
+  function startSound(){ beep(880,0.16,'triangle',0.18); }
+  function endSound(){ beep(660,0.1,'sine',0.16); setTimeout(function(){ beep(990,0.18,'sine',0.16); }, 110); }
+
+  /* ---------------- STATS ---------------- */
+  function todayKey(){ const d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+  function yesterdayKey(){ const d=new Date(); d.setDate(d.getDate()-1); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+  function loadStats(){
+    try{
+      return JSON.parse(localStorage.getItem('speechTrainerStats')) || {streak:0,totalSessions:0,lastDate:null};
+    }catch(e){ return {streak:0,totalSessions:0,lastDate:null}; }
+  }
+  function saveStats(s){ try{ localStorage.setItem('speechTrainerStats', JSON.stringify(s)); }catch(e){} }
+  function completeFullSession(){
+    const s = loadStats();
+    const today = todayKey();
+    if(s.lastDate === today){
+      s.totalSessions++;
+    } else if(s.lastDate === yesterdayKey()){
+      s.streak = (s.streak||0) + 1;
+      s.totalSessions++;
+      s.lastDate = today;
+    } else {
+      s.streak = 1;
+      s.totalSessions++;
+      s.lastDate = today;
+    }
+    saveStats(s);
+    return s;
+  }
+  function renderStats(){
+    const s = loadStats();
+    $('stat-streak').textContent = (s.streak||0) + '일';
+    $('stat-total').textContent = (s.totalSessions||0) + '회';
+  }
+
+  /* ---------------- HOME RENDER ---------------- */
+  function renderStations(){
+    const wrap = $('stations');
+    wrap.innerHTML = '';
+    STATIONS.forEach(function(st, idx){
+      const card = el(
+        '<div class="station-card ' + (idx===0?'primary':'') + '">' +
+          '<div class="station-badge" style="background:' + st.color + '">' + st.id + '</div>' +
+          '<div class="station-body">' +
+            '<h3>' + st.name + '</h3>' +
+            '<p>' + st.tagline + '</p>' +
+            '<div class="station-meta">' + st.meta + '</div>' +
+            (idx===0 ? '<div class="primary-tag">누르면 5개 스테이션이 이어서 진행돼요</div>' : '') +
+          '</div>' +
+        '</div>'
+      );
+      card.addEventListener('click', function(){
+        ensureAudio();
+        startSession(idx, idx===0 ? 'full' : 'single');
+      });
+      wrap.appendChild(card);
+    });
+  }
+
+  /* ---------------- SESSION STATE MACHINE ---------------- */
+  let session = null; // {mode, stationIdx, roundIdx, rounds, token}
+  let globalToken = 0;
+
+  function showScreen(id){
+    ['home-screen','game-screen','summary-screen'].forEach(function(s){
+      $(s).classList.toggle('hidden', s!==id);
+    });
+  }
+
+  function startSession(stationIdx, mode){
+    globalToken++;
+    session = { mode: mode, stationIdx: stationIdx, token: globalToken };
+    showScreen('game-screen');
+    enterStation(stationIdx);
+  }
+
+  function goHome(){
+    globalToken++;
+    session = null;
+    renderStats();
+    showScreen('home-screen');
+  }
+
+  $('quit-btn').addEventListener('click', goHome);
+  $('summary-home-btn').addEventListener('click', goHome);
+  $('skip-btn').addEventListener('click', function(){ if(session && session.forceNext) session.forceNext(); });
+
+  function buildRounds(station){
+    switch(station.type){
+      case 'keywords': {
+        const pool = shuffle(KEYWORDS);
+        return [0,1,2].map(function(r){ return { words: pool.slice(r*3, r*3+3) }; });
+      }
+      case 'topic': {
+        return shuffle(TOPICS).slice(0,3).map(function(t){ return { topic:t }; });
+      }
+      case 'word': {
+        return shuffle(WORDS).slice(0,3).map(function(w){ return { word:w }; });
+      }
+      case 'compress': {
+        return [60,30,15].map(function(d,i){ return { duration:d, label:(i+1)+'차 도전', prompt: STATION_FIXED_PROMPT }; });
+      }
+      case 'random_q': {
+        return shuffle(QUESTIONS5).slice(0,3).map(function(q){ return { question:q.text, category:q.cat }; });
+      }
+    }
+  }
+
+  function updateProgress(stationIdx, roundIdx, totalRounds){
+    const st = STATIONS[stationIdx];
+    $('progress-label').textContent = session.mode==='full'
+      ? ('게임 ' + (stationIdx+1) + '/5 · ' + st.name)
+      : st.name;
+    const dotsWrap = $('round-dots');
+    dotsWrap.innerHTML = '';
+    for(let i=0;i<totalRounds;i++){
+      const d = document.createElement('div');
+      d.className = 'round-dot' + (i<roundIdx ? ' filled':'');
+      dotsWrap.appendChild(d);
+    }
+  }
+
+  function enterStation(stationIdx){
+    const token = session.token;
+    const station = STATIONS[stationIdx];
+    const rounds = buildRounds(station);
+    session.stationIdx = stationIdx;
+    session.rounds = rounds;
+    session.roundIdx = 0;
+    updateProgress(stationIdx, 0, rounds.length);
+
+    const wrap = $('stage-wrap');
+    wrap.innerHTML = '';
+    const box = el(
+      '<div class="intro-box">' +
+        '<div class="num">STATION ' + station.id + ' / 5</div>' +
+        '<h2>' + station.name + '</h2>' +
+        '<p>' + station.tagline + '</p>' +
+      '</div>'
+    );
+    wrap.appendChild(box);
+    const go = function(){ if(session && session.token===token) enterRound(stationIdx, 0); };
+    const t = setTimeout(go, 1300);
+    session.forceNext = function(){ clearTimeout(t); go(); };
+  }
+
+  function enterRound(stationIdx, roundIdx){
+    const token = session.token;
+    const station = STATIONS[stationIdx];
+    const round = session.rounds[roundIdx];
+    session.roundIdx = roundIdx;
+    updateProgress(stationIdx, roundIdx, session.rounds.length);
+
+    if(station.type === 'random_q'){
+      runThinkPhase(token, station, round, roundIdx);
+    } else {
+      runReadyPhase(token, station, round, roundIdx);
+    }
+  }
+
+  function runReadyPhase(token, station, round, roundIdx){
+    const wrap = $('stage-wrap');
+    wrap.innerHTML = '';
+    const label = station.type==='compress' ? round.label : ('라운드 ' + (roundIdx+1));
+    const box = el(
+      '<div class="intro-box">' +
+        '<div class="num">' + label + '</div>' +
+        '<div class="ring-number" id="prep-num" style="font-size:64px">3</div>' +
+        '<p style="margin-top:6px">준비하세요</p>' +
+      '</div>'
+    );
+    wrap.appendChild(box);
+    let n = 3;
+    const numEl = $('prep-num');
+    tickSound();
+    const iv = setInterval(function(){
+      if(!session || session.token!==token){ clearInterval(iv); return; }
+      n--;
+      if(n<=0){ clearInterval(iv); runSpeakPhase(token, station, round, roundIdx); return; }
+      numEl.textContent = n;
+      tickSound();
+    }, 700);
+    session.forceNext = function(){ clearInterval(iv); runSpeakPhase(token, station, round, roundIdx); };
+  }
+
+  function runThinkPhase(token, station, round, roundIdx){
+    const wrap = $('stage-wrap');
+    wrap.innerHTML = '';
+    const box = el(
+      '<div class="prompt-box">' +
+        '<div class="category-chip">' + round.category + '</div>' +
+        '<div class="big-word" style="font-size:24px">' + round.question + '</div>' +
+        '<p class="instruction" style="margin-top:16px">생각할 시간 <span id="think-num">3</span>초</p>' +
+      '</div>'
+    );
+    wrap.appendChild(box);
+    let n = 3;
+    const numEl = $('think-num');
+    tickSound();
+    const iv = setInterval(function(){
+      if(!session || session.token!==token){ clearInterval(iv); return; }
+      n--;
+      if(n<=0){ clearInterval(iv); runSpeakPhase(token, station, round, roundIdx, 30); return; }
+      numEl.textContent = n;
+      tickSound();
+    }, 700);
+    session.forceNext = function(){ clearInterval(iv); runSpeakPhase(token, station, round, roundIdx, 30); };
+  }
+
+  function promptHTML(station, round){
+    switch(station.type){
+      case 'keywords':
+        return '<p class="instruction">이 단어를 사용하여 20초간 말을 꺼내세요</p>' +
+          '<div class="word-chips">' +
+            round.words.map(function(w,i){ return '<div class="word-chip" style="animation-delay:' + (i*0.12) + 's">' + w + '</div>'; }).join('') +
+          '</div>';
+      case 'topic':
+        return '<p class="instruction">이 주제로 20초간 관련단어 3개를 꺼내세요</p>' +
+          '<div class="big-word">' + round.topic + '</div>';
+      case 'word':
+        return '<p class="instruction">이 단어를 20초간 설명하세요</p>' +
+          '<div class="big-word">' + round.word + '</div>';
+      case 'compress':
+        return '<div class="compress-label">' + round.label + ' · ' + round.duration + '초 이내로 말하세요</div>' +
+          '<div class="big-word" style="font-size:22px">' + round.prompt + '</div>';
+      case 'random_q':
+        return '<div class="category-chip">' + round.category + '</div>' +
+          '<p class="instruction" style="font-size:14px">30초 안에 답변하세요</p>' +
+          '<div class="big-word" style="font-size:22px">' + round.question + '</div>';
+    }
+  }
+
+  function runSpeakPhase(token, station, round, roundIdx, overrideDuration){
+    const duration = overrideDuration || round.duration || 20;
+    const wrap = $('stage-wrap');
+    wrap.innerHTML = '';
+    const circumference = 2 * Math.PI * 90;
+    const promptDiv = el('<div class="prompt-box">' + promptHTML(station, round) + '</div>');
+    const ringDiv = el(
+      '<div class="ring-wrap">' +
+        '<svg viewBox="0 0 200 200">' +
+          '<circle class="ring-bg" cx="100" cy="100" r="90"></circle>' +
+          '<circle class="ring-fg" id="ring-fg" cx="100" cy="100" r="90" stroke-dasharray="' + circumference + '" stroke-dashoffset="0"></circle>' +
+        '</svg>' +
+        '<div class="ring-center">' +
+          '<div class="ring-number" id="speak-num">' + duration + '</div>' +
+          '<div class="ring-caption">초</div>' +
+        '</div>' +
+      '</div>'
+    );
+    wrap.appendChild(ringDiv);
+    wrap.appendChild(promptDiv);
+
+    startSound();
+    const ringFg = $('ring-fg');
+    const numEl = $('speak-num');
+    const startTime = Date.now();
+    const totalMs = duration * 1000;
+
+    const iv = setInterval(function(){
+      if(!session || session.token!==token){ clearInterval(iv); return; }
+      const elapsed = Date.now() - startTime;
+      const remainingMs = Math.max(0, totalMs - elapsed);
+      const remainingSec = Math.ceil(remainingMs/1000);
+      numEl.textContent = remainingSec;
+      const frac = remainingMs / totalMs;
+      ringFg.setAttribute('stroke-dashoffset', String(circumference * (1-frac)));
+      if(remainingSec <= 5){ ringFg.classList.add('urgent'); }
+      if(remainingMs <= 0){ finish(); }
+    }, 100);
+
+    function finish(){
+      clearInterval(iv);
+      endSound();
+      runRoundEnd(token, station, roundIdx);
+    }
+
+    session.forceNext = finish;
+  }
+
+  function runRoundEnd(token, station, roundIdx){
+    const wrap = $('stage-wrap');
+    wrap.innerHTML = '';
+    const isLast = roundIdx >= session.rounds.length - 1;
+    const box = el(
+      '<div class="round-pulse">' +
+        '<div class="check">✓</div>' +
+        '<div class="txt">라운드 ' + (roundIdx+1) + ' 완료</div>' +
+      '</div>'
+    );
+    wrap.appendChild(box);
+    const go = function(){
+      if(!session || session.token!==token) return;
+      if(isLast){ runStationEnd(token); }
+      else { enterRound(session.stationIdx, roundIdx+1); }
+    };
+    const t = setTimeout(go, 900);
+    session.forceNext = function(){ clearTimeout(t); go(); };
+  }
+
+  function runStationEnd(token){
+    const stationIdx = session.stationIdx;
+    const isLastStation = stationIdx >= STATIONS.length - 1;
+    const wrap = $('stage-wrap');
+    wrap.innerHTML = '';
+
+    if(session.mode === 'single' || isLastStation){
+      const box = el(
+        '<div class="station-end">' +
+          '<div class="check-lg">🎯</div>' +
+          '<h2>스테이션 완료</h2>' +
+          '<p>' + (session.mode==='full' ? '모든 스테이션을 마쳤어요' : '수고하셨어요') + '</p>' +
+        '</div>'
+      );
+      wrap.appendChild(box);
+      const go = function(){
+        if(!session || session.token!==token) return;
+        if(session.mode==='full' && isLastStation){ finishFullSession(); }
+        else { goHome(); }
+      };
+      const t = setTimeout(go, 1400);
+      session.forceNext = function(){ clearTimeout(t); go(); };
+    } else {
+      const next = STATIONS[stationIdx+1];
+      const box = el(
+        '<div class="station-end">' +
+          '<div class="check-lg">🎯</div>' +
+          '<h2>스테이션 완료</h2>' +
+          '<p>다음: ' + next.name + '</p>' +
+        '</div>'
+      );
+      wrap.appendChild(box);
+      const go = function(){
+        if(!session || session.token!==token) return;
+        enterStation(stationIdx+1);
+      };
+      const t = setTimeout(go, 1400);
+      session.forceNext = function(){ clearTimeout(t); go(); };
+    }
+  }
+
+  function finishFullSession(){
+    const stats = completeFullSession();
+    $('summary-streak').textContent = (stats.streak||0) + '일';
+    $('summary-total').textContent = (stats.totalSessions||0) + '회';
+    session = null;
+    showScreen('summary-screen');
+  }
+
+  /* ---------------- INIT ---------------- */
+  renderStats();
+  renderStations();
+  showScreen('home-screen');
+})();
+</script>
+</body>
+</html>
