@@ -1,6 +1,3 @@
-
-
-Index · HTML
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -10,7 +7,7 @@ Index · HTML
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#14171F">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="apple-touch-icon" href="icon-v2.png">
 <title>스피치 트레이닝</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -51,7 +48,7 @@ Index · HTML
     opacity:1; transition: opacity .25s ease;
   }
   .screen.hidden{ opacity:0; pointer-events:none; }
- 
+
   /* ---------- HOME ---------- */
   #home-header{ margin-bottom:22px; }
   #home-header .eyebrow{ color:var(--text-dim); font-size:14px; margin:0 0 4px; }
@@ -65,7 +62,7 @@ Index · HTML
   }
   .stat-chip .num{ font-family:'Space Grotesk',sans-serif; font-size:22px; font-weight:700; }
   .stat-chip .label{ font-size:12px; color:var(--text-dim); margin-top:2px; }
- 
+
   #stations{
     flex:1; display:flex; flex-direction:column; gap:12px;
     margin-top:20px; overflow-y:auto; padding-bottom:20px;
@@ -92,7 +89,7 @@ Index · HTML
   .primary-tag{
     font-size:11px; color:var(--amber); margin-top:6px; font-weight:600;
   }
- 
+
   /* ---------- GAME SCREEN ---------- */
   #game-screen{ justify-content:flex-start; }
   .game-top{ display:flex; align-items:center; justify-content:space-between; }
@@ -105,18 +102,18 @@ Index · HTML
   .round-dots{ display:flex; gap:6px; }
   .round-dot{ width:7px; height:7px; border-radius:50%; background:var(--line); }
   .round-dot.filled{ background:var(--amber); }
- 
+
   .stage-wrap{
     flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
     gap:22px; position:relative;
   }
- 
+
   /* station intro */
   .intro-box{ text-align:center; }
   .intro-box .num{ font-family:'Space Grotesk',sans-serif; font-size:15px; color:var(--amber); font-weight:600; margin-bottom:8px; }
   .intro-box h2{ font-size:26px; margin:0 0 8px; }
   .intro-box p{ color:var(--text-dim); font-size:14px; margin:0; }
- 
+
   /* ring timer */
   .ring-wrap{ position:relative; width:220px; height:220px; }
   .ring-wrap svg{ width:100%; height:100%; transform:rotate(-90deg); }
@@ -130,7 +127,7 @@ Index · HTML
   }
   .ring-number{ font-family:'Space Grotesk',sans-serif; font-size:52px; font-weight:700; line-height:1; }
   .ring-caption{ font-size:12px; color:var(--text-dim); margin-top:4px; }
- 
+
   /* prompt content */
   .prompt-box{ text-align:center; padding:0 10px; max-width:340px; }
   .instruction{ font-size:15px; color:var(--text-dim); margin:0 0 14px; line-height:1.5; }
@@ -150,7 +147,7 @@ Index · HTML
   .big-word{ font-family:'Space Grotesk',sans-serif; font-size:34px; font-weight:700;
     opacity:0; transform:translateY(8px); animation: chipIn .5s ease forwards; }
   .compress-label{ font-size:13px; color:var(--amber); font-weight:600; margin-bottom:6px; }
- 
+
   .round-pulse{
     position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
     flex-direction:column; gap:10px;
@@ -162,7 +159,7 @@ Index · HTML
   }
   @keyframes pulseIn{ 0%{ transform:scale(0.4); opacity:0;} 60%{ transform:scale(1.08);} 100%{ transform:scale(1); opacity:1;} }
   .round-pulse .txt{ font-size:14px; color:var(--text-dim); }
- 
+
   .station-end{
     text-align:center;
   }
@@ -173,13 +170,13 @@ Index · HTML
   }
   .station-end h2{ font-size:22px; margin:0 0 6px; }
   .station-end p{ color:var(--text-dim); font-size:14px; margin:0; }
- 
+
   .skip-row{ display:flex; justify-content:center; padding-top:6px; }
   .skip-btn{
     background:none; border:none; color:var(--text-dim); font-size:13px;
     padding:10px 18px;
   }
- 
+
   /* ---------- SUMMARY ---------- */
   #summary-screen{ align-items:center; justify-content:center; text-align:center; }
   .summary-badge{
@@ -195,7 +192,7 @@ Index · HTML
     padding:16px 40px; font-size:16px; font-weight:700; font-family:'Space Grotesk',sans-serif;
   }
   .home-btn:active{ opacity:0.85; }
- 
+
   @media (prefers-reduced-motion: reduce){
     *{ animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
   }
@@ -203,7 +200,7 @@ Index · HTML
 </head>
 <body>
 <div id="app">
- 
+
   <!-- HOME -->
   <section id="home-screen" class="screen">
     <div id="home-header">
@@ -216,7 +213,7 @@ Index · HTML
     </div>
     <div id="stations"></div>
   </section>
- 
+
   <!-- GAME -->
   <section id="game-screen" class="screen hidden">
     <div class="game-top">
@@ -227,7 +224,7 @@ Index · HTML
     <div class="stage-wrap" id="stage-wrap"></div>
     <div class="skip-row"><button class="skip-btn" id="skip-btn">다음으로 건너뛰기 →</button></div>
   </section>
- 
+
   <!-- SUMMARY -->
   <section id="summary-screen" class="screen hidden">
     <div class="summary-badge">🎉</div>
@@ -239,13 +236,13 @@ Index · HTML
     </div>
     <button class="home-btn" id="summary-home-btn">홈으로</button>
   </section>
- 
+
 </div>
- 
+
 <script>
 (function(){
   "use strict";
- 
+
   /* ---------------- DATA POOLS ---------------- */
   const KEYWORDS = ["우산","기차역","커피","달빛","자전거","편지","고양이","바다","시계","계단","안개","촛불","지도","호수","라디오","여권","자물쇠","불꽃놀이","나침반","온실"];
   const TOPICS = ["여행","행복","인공지능","환경보호","건강한 습관","우정","도시생활","독서","성장","돈","시간관리","창의성","소통","자유","변화","전통과 현대","일과 삶의 균형","도전","협업","기억"];
@@ -274,7 +271,7 @@ Index · HTML
     {cat:"시사", text:"미디어가 여론에 미치는 영향에 대해 말해보세요."},
     {cat:"국제", text:"글로벌 기업의 사회적 책임은 무엇이라 생각하나요?"}
   ];
- 
+
   const STATIONS = [
     { id:1, color:"var(--amber)", name:"키워드 조합", tagline:"무작위 단어 3개를 엮어 20초간 스피치", meta:"3라운드 · 20초", type:"keywords" },
     { id:2, color:"var(--teal)",  name:"주제 연상",   tagline:"주제를 보고 관련 단어 3개를 20초 안에", meta:"3라운드 · 20초", type:"topic" },
@@ -283,7 +280,7 @@ Index · HTML
     { id:5, color:"var(--violet)",name:"즉석 인터뷰", tagline:"무작위 질문에 3초 생각 후 30초 답변", meta:"3라운드 · 30초", type:"random_q" }
   ];
   const STATION_FIXED_PROMPT = "오늘 주식시장의 시황을 말해보세요";
- 
+
   /* ---------------- UTIL ---------------- */
   function shuffle(arr){
     const a = arr.slice();
@@ -299,7 +296,7 @@ Index · HTML
     return t.content.firstElementChild;
   }
   function $(id){ return document.getElementById(id); }
- 
+
   /* ---------------- AUDIO ---------------- */
   let actx = null;
   function ensureAudio(){
@@ -326,7 +323,7 @@ Index · HTML
   function tickSound(){ beep(440,0.08,'sine',0.12); }
   function startSound(){ beep(880,0.16,'triangle',0.18); }
   function endSound(){ beep(660,0.1,'sine',0.16); setTimeout(function(){ beep(990,0.18,'sine',0.16); }, 110); }
- 
+
   /* ---------------- STATS ---------------- */
   function todayKey(){ const d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
   function yesterdayKey(){ const d=new Date(); d.setDate(d.getDate()-1); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
@@ -358,7 +355,7 @@ Index · HTML
     $('stat-streak').textContent = (s.streak||0) + '일';
     $('stat-total').textContent = (s.totalSessions||0) + '회';
   }
- 
+
   /* ---------------- HOME RENDER ---------------- */
   function renderStations(){
     const wrap = $('stations');
@@ -382,35 +379,35 @@ Index · HTML
       wrap.appendChild(card);
     });
   }
- 
+
   /* ---------------- SESSION STATE MACHINE ---------------- */
   let session = null; // {mode, stationIdx, roundIdx, rounds, token}
   let globalToken = 0;
- 
+
   function showScreen(id){
     ['home-screen','game-screen','summary-screen'].forEach(function(s){
       $(s).classList.toggle('hidden', s!==id);
     });
   }
- 
+
   function startSession(stationIdx, mode){
     globalToken++;
     session = { mode: mode, stationIdx: stationIdx, token: globalToken };
     showScreen('game-screen');
     enterStation(stationIdx);
   }
- 
+
   function goHome(){
     globalToken++;
     session = null;
     renderStats();
     showScreen('home-screen');
   }
- 
+
   $('quit-btn').addEventListener('click', goHome);
   $('summary-home-btn').addEventListener('click', goHome);
   $('skip-btn').addEventListener('click', function(){ if(session && session.forceNext) session.forceNext(); });
- 
+
   function buildRounds(station){
     switch(station.type){
       case 'keywords': {
@@ -431,7 +428,7 @@ Index · HTML
       }
     }
   }
- 
+
   function updateProgress(stationIdx, roundIdx, totalRounds){
     const st = STATIONS[stationIdx];
     $('progress-label').textContent = session.mode==='full'
@@ -445,7 +442,7 @@ Index · HTML
       dotsWrap.appendChild(d);
     }
   }
- 
+
   function enterStation(stationIdx){
     const token = session.token;
     const station = STATIONS[stationIdx];
@@ -454,7 +451,7 @@ Index · HTML
     session.rounds = rounds;
     session.roundIdx = 0;
     updateProgress(stationIdx, 0, rounds.length);
- 
+
     const wrap = $('stage-wrap');
     wrap.innerHTML = '';
     const box = el(
@@ -469,21 +466,21 @@ Index · HTML
     const t = setTimeout(go, 1300);
     session.forceNext = function(){ clearTimeout(t); go(); };
   }
- 
+
   function enterRound(stationIdx, roundIdx){
     const token = session.token;
     const station = STATIONS[stationIdx];
     const round = session.rounds[roundIdx];
     session.roundIdx = roundIdx;
     updateProgress(stationIdx, roundIdx, session.rounds.length);
- 
+
     if(station.type === 'random_q'){
       runThinkPhase(token, station, round, roundIdx);
     } else {
       runReadyPhase(token, station, round, roundIdx);
     }
   }
- 
+
   function runReadyPhase(token, station, round, roundIdx){
     const wrap = $('stage-wrap');
     wrap.innerHTML = '';
@@ -508,7 +505,7 @@ Index · HTML
     }, 700);
     session.forceNext = function(){ clearInterval(iv); runSpeakPhase(token, station, round, roundIdx); };
   }
- 
+
   function runThinkPhase(token, station, round, roundIdx){
     const wrap = $('stage-wrap');
     wrap.innerHTML = '';
@@ -532,7 +529,7 @@ Index · HTML
     }, 700);
     session.forceNext = function(){ clearInterval(iv); runSpeakPhase(token, station, round, roundIdx, 30); };
   }
- 
+
   function promptHTML(station, round){
     switch(station.type){
       case 'keywords':
@@ -555,7 +552,7 @@ Index · HTML
           '<div class="big-word" style="font-size:22px">' + round.question + '</div>';
     }
   }
- 
+
   function runSpeakPhase(token, station, round, roundIdx, overrideDuration){
     const duration = overrideDuration || round.duration || 20;
     const wrap = $('stage-wrap');
@@ -576,13 +573,13 @@ Index · HTML
     );
     wrap.appendChild(ringDiv);
     wrap.appendChild(promptDiv);
- 
+
     startSound();
     const ringFg = $('ring-fg');
     const numEl = $('speak-num');
     const startTime = Date.now();
     const totalMs = duration * 1000;
- 
+
     const iv = setInterval(function(){
       if(!session || session.token!==token){ clearInterval(iv); return; }
       const elapsed = Date.now() - startTime;
@@ -594,16 +591,16 @@ Index · HTML
       if(remainingSec <= 5){ ringFg.classList.add('urgent'); }
       if(remainingMs <= 0){ finish(); }
     }, 100);
- 
+
     function finish(){
       clearInterval(iv);
       endSound();
       runRoundEnd(token, station, roundIdx);
     }
- 
+
     session.forceNext = finish;
   }
- 
+
   function runRoundEnd(token, station, roundIdx){
     const wrap = $('stage-wrap');
     wrap.innerHTML = '';
@@ -623,13 +620,13 @@ Index · HTML
     const t = setTimeout(go, 900);
     session.forceNext = function(){ clearTimeout(t); go(); };
   }
- 
+
   function runStationEnd(token){
     const stationIdx = session.stationIdx;
     const isLastStation = stationIdx >= STATIONS.length - 1;
     const wrap = $('stage-wrap');
     wrap.innerHTML = '';
- 
+
     if(session.mode === 'single' || isLastStation){
       const box = el(
         '<div class="station-end">' +
@@ -664,7 +661,7 @@ Index · HTML
       session.forceNext = function(){ clearTimeout(t); go(); };
     }
   }
- 
+
   function finishFullSession(){
     const stats = completeFullSession();
     $('summary-streak').textContent = (stats.streak||0) + '일';
@@ -672,7 +669,7 @@ Index · HTML
     session = null;
     showScreen('summary-screen');
   }
- 
+
   /* ---------------- INIT ---------------- */
   renderStats();
   renderStations();
@@ -681,5 +678,3 @@ Index · HTML
 </script>
 </body>
 </html>
- 
-
